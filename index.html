@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>部分页面截图</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        /* 用于高亮显示选择区域的样式 */
+        .selection-box {
+            position: absolute;
+            border: 2px dashed #000;
+            pointer-events: none; /* 确保不干扰其他元素和事件 */
+            display: none;
+        }
+        #screenshot-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        img {
+            width: 200px;
+            height: 200px;
+            margin-top: 20px;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none;
+            -webkit-user-drag: none; /* Safari */
+            user-drag: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="screenshot-area">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+    <img src="https://download.mashaojie.cn/image/header.png">
+</div>
+
+<script>
+    let startX, startY, endX, endY;
+    const selectionBox = document.createElement('div');
+    selectionBox.className = 'selection-box';
+    document.body.appendChild(selectionBox);
+
+    // 鼠标按下事件
+    document.addEventListener('mousedown', function(e) {
+        startX = e.pageX;
+        startY = e.pageY;
+        updateSelectionBox(startX, startY, 0, 0);
+        selectionBox.style.display = 'block';
+
+        // 鼠标移动事件
+        document.addEventListener('mousemove', onMouseMove);
+    });
+
+    // 鼠标释放事件
+    document.addEventListener('mouseup', function(e) {
+        document.removeEventListener('mousemove', onMouseMove);
+        selectionBox.style.display = 'none';
+        endX = e.pageX;
+        endY = e.pageY;
+
+        captureSelection(startX, startY, endX, endY);
+    });
+
+    function onMouseMove(e) {
+        const width = e.pageX - startX;
+        const height = e.pageY - startY;
+        updateSelectionBox(startX, startY, width, height);
+    }
+
+    function updateSelectionBox(x, y, width, height) {
+        selectionBox.style.left = `${x}px`;
+        selectionBox.style.top = `${y}px`;
+        selectionBox.style.width = `${width}px`;
+        selectionBox.style.height = `${height}px`;
+    }
+
+    // 使用html2canvas截取选择区域
+    function captureSelection(x1, y1, x2, y2) {
+        html2canvas(document.body, {useCORS: true, allowTaint: true, scale: 1}).then(canvas => {
+            // 创建新的canvas来绘制选择区域的内容
+            const extractedCanvas = document.createElement('canvas');
+            const ctx = extractedCanvas.getContext('2d');
+            const width = x2 - x1;
+            const height = y2 - y1;
+            extractedCanvas.width = width;
+            extractedCanvas.height = height;
+            extractedCanvas.style.border = '1px solid #000000'
+            ctx.drawImage(canvas, x1, y1, width, height, 0, 0, width, height);
+
+            // 处理截图结果，例如显示或保存
+            document.body.appendChild(extractedCanvas); // 示例：将截取的内容添加到页面中
+        });
+    }
+</script>
+
+</body>
+</html>
